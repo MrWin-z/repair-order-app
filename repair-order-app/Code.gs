@@ -75,6 +75,18 @@ function getTicket(ticketNo) {
   return rowToObject_(row);
 }
 
+/** Recent repair orders for the in-app print archive. */
+function listTickets() {
+  setup();
+  const rows = getSheet_().getDataRange().getValues().slice(1).reverse();
+  const baseUrl = ScriptApp.getService().getUrl();
+  return rows.slice(0, 500).map(row => {
+    const ticket = rowToObject_(row);
+    ticket.printUrl = baseUrl + '?view=print&id=' + encodeURIComponent(ticket.ticketNo);
+    return ticket;
+  });
+}
+
 /** Keeps customer photos private while still rendering them in the print view. */
 function getPrintableTicket(ticketNo) {
   const ticket = getTicket(ticketNo);
